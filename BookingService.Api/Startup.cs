@@ -1,15 +1,10 @@
+using BookingService.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BookingService.Api
 {
@@ -25,6 +20,11 @@ namespace BookingService.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddDbContext<BookingServiceContext>(options =>
+            {
+                options.UseSqlServer(Configuration["BookingServiceContext"]);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
