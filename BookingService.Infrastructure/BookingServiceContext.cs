@@ -1,9 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BookingService.Domain.Entities;
+using BookingService.Infrastructure.EntitiesConfigurations;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingService.Infrastructure
 {
     public class BookingServiceContext : DbContext
     {
+        public DbSet<HotelRoom> HotelRooms { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+
         public BookingServiceContext(DbContextOptions<BookingServiceContext> options) : base( options)
         {
 
@@ -11,6 +16,9 @@ namespace BookingService.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new HotelRoomConfiguration());
+            modelBuilder.ApplyConfiguration(new ReservationConfiguration());
+
             base.OnModelCreating(modelBuilder);
         }
     }

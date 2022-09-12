@@ -9,7 +9,7 @@ namespace BookingService.Infrastructure.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<HotelRoom> builder)
         {
-            //builder.ToTable("HotelRoom");
+            builder.ToTable("HotelRoom");
 
             builder.Property(x => x.Id);
             
