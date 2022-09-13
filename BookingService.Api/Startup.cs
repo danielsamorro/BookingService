@@ -19,6 +19,8 @@ namespace BookingService.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<BookingServiceSettings>(Configuration);
+
             services.AddControllers();
 
             services.AddDbContext<BookingServiceContext>(options =>
