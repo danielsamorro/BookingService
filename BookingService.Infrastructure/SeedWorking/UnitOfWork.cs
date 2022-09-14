@@ -1,9 +1,9 @@
-﻿using BookingService.Domain.SeedWorking.Interfaces;
+﻿using BookingService.Infrastructure.SeedWorking.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BookingService.Infrastructure
+namespace BookingService.Infrastructure.SeedWorking
 {
     public class UnitOfWork<T> : IUnitOfWork where T : DbContext
     {

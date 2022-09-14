@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BookingService.Domain.Entities
+namespace BookingService.Infrastructure.Entities
 {
     public class Reservation
     {
@@ -17,6 +17,6 @@ namespace BookingService.Domain.Entities
         public virtual User User { get; set; }
         public virtual HotelRoom HotelRoom { get; set; }
         public virtual List<ReservationDate> ReservationDates { get; set; }
-        
+
     }
 }

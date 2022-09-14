@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BookingService.Domain.Entities
+namespace BookingService.Infrastructure.Entities
 {
     public class User
     {

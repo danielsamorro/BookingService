@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BookingService.Domain.Requests
+namespace BookingService.Domain.Commands.Requests
 {
     public class ReservationRequest
     {

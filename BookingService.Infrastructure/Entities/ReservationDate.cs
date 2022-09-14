@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BookingService.Domain.Entities
+namespace BookingService.Infrastructure.Entities
 {
     public class ReservationDate
     {

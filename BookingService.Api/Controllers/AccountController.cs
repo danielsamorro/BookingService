@@ -1,8 +1,7 @@
 ﻿using BookingService.Api.Services.Interfaces;
-using BookingService.Domain.Entities;
-using BookingService.Domain.Requests;
-using BookingService.Domain.SeedWorking.Interfaces;
+using BookingService.Domain.Commands.Requests;
 using BookingService.Infrastructure.Repositories.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,40 +12,23 @@ namespace BookingService.Api.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private IMediator _mediator;
         private readonly IUserRepository _userRepository;
         private readonly IAuthTokenService _authTokenService;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountController(IAuthTokenService authTokenService, IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public AccountController(IMediator signUpHandler, IAuthTokenService authTokenService, IUserRepository userRepository)
         {
+            _mediator = signUpHandler;
             _authTokenService = authTokenService;
             _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
         [Route("signup")]
         [AllowAnonymous]
-        public async Task<IActionResult> SignIn(SignUpRequest request)
+        public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {
-            var userExists = await _userRepository.CheckDuplicate(request.UserName, request.EmailAddress);
-
-            if (userExists)
-                return NotFound(new { message = "Could not sign up user." });
-
-            var user = new User
-            {
-                EmailAddress = request.EmailAddress,
-                Username = request.UserName,
-                Password = request.Password,
-                Role = "Customer"
-            };
-
-            _userRepository.Add(user);
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return Ok(new { message = "User created." });
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpPost]

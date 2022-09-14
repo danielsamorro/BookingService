@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BookingService.Domain.Requests
+namespace BookingService.Domain.Commands.Requests
 {
     public class CancelReservationRequest
     {

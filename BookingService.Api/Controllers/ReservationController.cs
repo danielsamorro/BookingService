@@ -1,7 +1,7 @@
-﻿using BookingService.Domain.Entities;
-using BookingService.Domain.Requests;
-using BookingService.Domain.SeedWorking.Interfaces;
+﻿using BookingService.Domain.Commands.Requests;
+using BookingService.Infrastructure.Entities;
 using BookingService.Infrastructure.Repositories.Interfaces;
+using BookingService.Infrastructure.SeedWorking.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

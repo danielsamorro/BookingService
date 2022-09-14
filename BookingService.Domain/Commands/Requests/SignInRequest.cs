@@ -1,4 +1,4 @@
-﻿namespace BookingService.Domain.Requests
+﻿namespace BookingService.Domain.Commands.Requests
 {
     public class SignInRequest
     {

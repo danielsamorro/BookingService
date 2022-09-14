@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BookingService.Domain.SeedWorking.Interfaces
+namespace BookingService.Infrastructure.SeedWorking.Interfaces
 {
     public interface IUnitOfWork
     {

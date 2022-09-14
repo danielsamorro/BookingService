@@ -1,6 +1,6 @@
 ﻿using BookingService.Api.Services.Interfaces;
-using BookingService.Domain.Entities;
 using BookingService.Infrastructure;
+using BookingService.Infrastructure.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;

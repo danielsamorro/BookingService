@@ -1,4 +1,4 @@
-﻿using BookingService.Domain.Entities;
+﻿using BookingService.Infrastructure.Entities;
 using System.Threading.Tasks;
 
 namespace BookingService.Infrastructure.Repositories.Interfaces

@@ -1,9 +1,11 @@
 using BookingService.Api.Services;
 using BookingService.Api.Services.Interfaces;
-using BookingService.Domain.SeedWorking.Interfaces;
 using BookingService.Infrastructure;
 using BookingService.Infrastructure.Repositories;
 using BookingService.Infrastructure.Repositories.Interfaces;
+using BookingService.Infrastructure.SeedWorking;
+using BookingService.Infrastructure.SeedWorking.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
 
 namespace BookingService.Api
@@ -32,6 +35,8 @@ namespace BookingService.Api
 
             services.AddCors();
             services.AddControllers();
+
+            services.AddMediatR(AppDomain.CurrentDomain.Load("BookingService.Domain"));
 
             services.AddDbContext<BookingServiceContext>(options =>
             {
@@ -59,7 +64,6 @@ namespace BookingService.Api
                         ValidateAudience = false
                     };
                 });
-
 
             services.AddScoped<IUnitOfWork, UnitOfWork<BookingServiceContext>>();
 
