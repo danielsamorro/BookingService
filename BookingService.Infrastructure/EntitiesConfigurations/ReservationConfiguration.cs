@@ -1,9 +1,6 @@
 ﻿using BookingService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BookingService.Infrastructure.EntitiesConfigurations
 {
@@ -21,6 +18,10 @@ namespace BookingService.Infrastructure.EntitiesConfigurations
             builder.HasOne(x => x.HotelRoom)
                 .WithMany(x => x.Reservations)
                 .HasForeignKey(x => x.HotelRoomId);
+
+            builder.HasOne(x => x.User)
+                .WithMany(u => u.Reservations)
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

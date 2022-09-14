@@ -8,6 +8,7 @@ namespace BookingService.Infrastructure
     {
         public DbSet<HotelRoom> HotelRooms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<ReservationDate> ReservationDates { get; set; }
         public DbSet<User> Users { get; set; }
 
         public BookingServiceContext(DbContextOptions<BookingServiceContext> options) : base( options)
@@ -19,6 +20,7 @@ namespace BookingService.Infrastructure
         {
             modelBuilder.ApplyConfiguration(new HotelRoomConfiguration());
             modelBuilder.ApplyConfiguration(new ReservationConfiguration());
+            modelBuilder.ApplyConfiguration(new ReservationDateConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
 
             base.OnModelCreating(modelBuilder);

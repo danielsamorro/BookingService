@@ -18,5 +18,11 @@ namespace BookingService.Infrastructure.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(username) && u.Password.Equals(password));
         }
+
+        public async Task<User> Get(string username)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Username.Equals(username));
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using BookingService.Domain.Requests;
 using BookingService.Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;

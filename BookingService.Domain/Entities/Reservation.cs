@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BookingService.Domain.Entities
 {
@@ -8,8 +7,11 @@ namespace BookingService.Domain.Entities
     {
         public Guid Id { get; set; }
         public Guid HotelRoomId { get; set; }
-        
-        public virtual List<ReservationDate> ReservationDates { get; set; }
+        public Guid UserId { get; set; }
+
+        public virtual User User { get; set; }
         public virtual HotelRoom HotelRoom { get; set; }
+        public virtual List<ReservationDate> ReservationDates { get; set; }
+        
     }
 }
