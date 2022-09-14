@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BookingService.Infrastructure.Repositories
 {
-    internal class ReservationRepository : IReservationRepository
+    public class ReservationRepository : IReservationRepository
     {
         private readonly BookingServiceContext _context;
 

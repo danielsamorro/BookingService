@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BookingService.Infrastructure.Repositories
 {
-    internal class HotelRoomRepository : IHotelRoomRepository
+    public class HotelRoomRepository : IHotelRoomRepository
     {
         private readonly BookingServiceContext _context;
 
