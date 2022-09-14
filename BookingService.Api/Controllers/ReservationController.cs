@@ -28,7 +28,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("reservations")]
+        [Route("getreservations")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetReservations(Guid userId)
         {

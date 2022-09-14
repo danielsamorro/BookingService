@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace BookingService.Api
@@ -35,6 +36,7 @@ namespace BookingService.Api
             services.AddDbContext<BookingServiceContext>(options =>
             {
                 options.UseSqlServer(Configuration["BookingServiceContext"]);
+                //options.UseInMemoryDatabase("MemoryDB");
             });
 
             var authKey = Encoding.ASCII.GetBytes( Configuration["AuthSecret"]);
@@ -66,6 +68,11 @@ namespace BookingService.Api
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddSingleton<IAuthTokenService, AuthTokenService>();
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "BookingService", Description = "API to manage hotel rooms reservations", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -91,6 +98,13 @@ namespace BookingService.Api
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger()
+               .UseSwaggerUI(options =>
+               {
+                   options.RoutePrefix = string.Empty;
+                   options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+               });
         }
     }
 }

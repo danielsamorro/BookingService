@@ -69,25 +69,5 @@ namespace BookingService.Api.Controllers
                 token
             });
         }
-
-        [HttpGet]
-        [Route("anonymous")]
-        [AllowAnonymous]
-        public string Anonymous() => "Anonymous";
-
-        [HttpGet]
-        [Route("authenticated")]
-        [Authorize]
-        public string Authenticated() => $"Authenticated : {User.Identity.Name}";
-
-        [HttpGet]
-        [Route("customer")]
-        [Authorize(Roles = "Customer,Admin")]
-        public string Customer() => $"Authenticated : {User.Identity.Name}";
-
-        [HttpGet]
-        [Route("admin")]
-        [Authorize(Roles = "Admin")]
-        public string Admin() => $"Authenticated : {User.Identity.Name}";
     }
 }

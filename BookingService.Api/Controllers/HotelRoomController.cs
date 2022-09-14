@@ -1,5 +1,4 @@
-﻿using BookingService.Domain.Requests;
-using BookingService.Infrastructure.Repositories.Interfaces;
+﻿using BookingService.Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("rooms")]
+        [Route("getrooms")]
         [AllowAnonymous]
         public async Task<IActionResult> GetRooms()
         {
@@ -32,11 +31,11 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("reserveddates")]
+        [Route("getreserveddates")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetReservedDates(GetReservedDatesRequest request)
+        public async Task<IActionResult> GetReservedDates(string roomNumber)
         {
-            var hotelRoom = await _hotelRoomRepository.Get(request.RoomNumber);
+            var hotelRoom = await _hotelRoomRepository.Get(roomNumber);
 
             if (hotelRoom == null)
                 return NotFound(new { message = "Room not found" });
