@@ -19,6 +19,19 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpGet]
+        [Route("rooms")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetRooms()
+        {
+            var rooms = await _hotelRoomRepository.GetAll();
+
+            return Ok(new
+            {
+                rooms
+            });
+        }
+
+        [HttpGet]
         [Route("reserveddates")]
         [AllowAnonymous]
         public async Task<IActionResult> GetReservedDates(GetReservedDatesRequest request)

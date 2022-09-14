@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20220914023858_AddReservationsToUser.Designer.cs" />
     <Compile Remove="Migrations\20220914024154_AddReservationsToUser.cs" />
     <Compile Remove="Migrations\20220914024154_AddReservationsToUser.Designer.cs" />
+    <Compile Remove="Migrations\20220914165113_AddUserToReservation.cs" />
+    <Compile Remove="Migrations\20220914165113_AddUserToReservation.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

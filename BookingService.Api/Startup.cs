@@ -1,5 +1,6 @@
 using BookingService.Api.Services;
 using BookingService.Api.Services.Interfaces;
+using BookingService.Domain.SeedWorking.Interfaces;
 using BookingService.Infrastructure;
 using BookingService.Infrastructure.Repositories;
 using BookingService.Infrastructure.Repositories.Interfaces;
@@ -57,11 +58,14 @@ namespace BookingService.Api
                     };
                 });
 
-            services.AddSingleton<IAuthTokenService, AuthTokenService>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork<BookingServiceContext>>();
 
             services.AddScoped<IHotelRoomRepository, HotelRoomRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddSingleton<IAuthTokenService, AuthTokenService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

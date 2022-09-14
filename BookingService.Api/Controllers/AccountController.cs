@@ -21,9 +21,9 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpPost]
-        [Route("authenticate")]
+        [Route("signin")]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate(AuthenticateRequest request)
+        public async Task<IActionResult> SignIn(SignInRequest request)
         {
             var user = await _userRepository.Get(request.Username, request.Password);
 

@@ -5,6 +5,11 @@ namespace BookingService.Domain.Entities
 {
     public class Reservation
     {
+        public Reservation()
+        {
+            ReservationDates = new List<ReservationDate>();
+        }
+
         public Guid Id { get; set; }
         public Guid HotelRoomId { get; set; }
         public Guid UserId { get; set; }

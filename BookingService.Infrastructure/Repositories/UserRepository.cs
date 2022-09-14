@@ -22,6 +22,8 @@ namespace BookingService.Infrastructure.Repositories
         public async Task<User> Get(string username)
         {
             return await _context.Users
+                .Include(u => u.Reservations)
+                .ThenInclude(r => r.ReservationDates)
                 .FirstOrDefaultAsync(u => u.Username.Equals(username));
         }
     }
