@@ -1,7 +1,7 @@
 ﻿using BookingService.Domain.Entities;
 using BookingService.Infrastructure.Repositories.Interfaces;
-using System;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace BookingService.Infrastructure.Repositories
 {
@@ -14,9 +14,9 @@ namespace BookingService.Infrastructure.Repositories
             _context = context;
         }
 
-        public User Get(string username, string password)
+        public async Task<User> Get(string username, string password)
         {
-            return _context.Users.FirstOrDefault(u => u.Username.Equals(username) && u.Password.Equals(password));
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(username) && u.Password.Equals(password));
         }
     }
 }
