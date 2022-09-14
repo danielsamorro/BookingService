@@ -1,5 +1,7 @@
 ﻿using BookingService.Api.Services.Interfaces;
+using BookingService.Domain.Entities;
 using BookingService.Domain.Requests;
+using BookingService.Domain.SeedWorking.Interfaces;
 using BookingService.Infrastructure.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +15,38 @@ namespace BookingService.Api.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthTokenService _authTokenService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountController(IAuthTokenService authTokenService, IUserRepository userRepository)
+        public AccountController(IAuthTokenService authTokenService, IUserRepository userRepository, IUnitOfWork unitOfWork)
         {
             _authTokenService = authTokenService;
             _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
+        }
+
+        [HttpPost]
+        [Route("signup")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SignIn(SignUpRequest request)
+        {
+            var userExists = await _userRepository.CheckDuplicate(request.UserName, request.EmailAddress);
+
+            if (userExists)
+                return NotFound(new { message = "Could not sign up user." });
+
+            var user = new User
+            {
+                EmailAddress = request.EmailAddress,
+                Username = request.UserName,
+                Password = request.Password,
+                Role = "Customer"
+            };
+
+            _userRepository.Add(user);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Ok(new { message = "User created." });
         }
 
         [HttpPost]
