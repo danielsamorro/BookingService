@@ -9,8 +9,8 @@ namespace BookingService.Infrastructure.Repositories.Interfaces
     public interface IHotelRoomRepository
     {
         void Add(HotelRoom hotelRoom);
-        HotelRoom Get(Guid id);
-        HotelRoom Get(string number);
+        Task<HotelRoom> Get(Guid id);
+        Task<HotelRoom> Get(string number);
         Task<IEnumerable<HotelRoom>> GetAll();
     }
 }

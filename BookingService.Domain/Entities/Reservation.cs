@@ -8,9 +8,8 @@ namespace BookingService.Domain.Entities
     {
         public Guid Id { get; set; }
         public Guid HotelRoomId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-
+        
+        public virtual List<ReservationDate> ReservationDates { get; set; }
         public virtual HotelRoom HotelRoom { get; set; }
     }
 }

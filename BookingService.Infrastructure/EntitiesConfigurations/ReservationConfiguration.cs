@@ -16,12 +16,6 @@ namespace BookingService.Infrastructure.EntitiesConfigurations
             builder.Property(x => x.Id)
                 .IsRequired();
 
-            builder.Property(x => x.StartDate)
-                .IsRequired();
-
-            builder.Property(x => x.EndDate)
-                .IsRequired();
-
             builder.HasKey(x => x.Id);
 
             builder.HasOne(x => x.HotelRoom)
