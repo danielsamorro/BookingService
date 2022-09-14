@@ -58,7 +58,7 @@ namespace BookingService.Api.Controllers
                 return BadRequest(new { message = "Reservation cannot start today" });
 
             if (request.Dates.OrderBy(d => d).FirstOrDefault().Date > DateTime.Now.AddDays(30).Date)
-                return BadRequest(new { message = "Reservation cannot start today" });
+                return BadRequest(new { message = "Reservation cannot start more than 30 days away" });
 
             var user = await _userRepository.Get(User.Identity.Name);
 
@@ -114,7 +114,7 @@ namespace BookingService.Api.Controllers
                 return BadRequest(new { message = "Reservation cannot start today" });
 
             if (request.Dates.OrderBy(d => d).FirstOrDefault().Date > DateTime.Now.AddDays(30).Date)
-                return BadRequest(new { message = "Reservation cannot start today" });
+                return BadRequest(new { message = "Reservation cannot start more than 30 days away" });
 
             var user = await _userRepository.Get(User.Identity.Name);
 
@@ -152,5 +152,35 @@ namespace BookingService.Api.Controllers
                 dates = reservation.ReservationDates.Select(rd => rd.ReservedOn.Date)
             });
         }
+
+        [HttpDelete]
+        [Route("cancelReservation")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CancelReservation(CancelReservationRequest request)
+        {
+            var user = await _userRepository.Get(User.Identity.Name);
+
+            if (user == null)
+                return NotFound(new { message = "User not found" });
+
+            if (user.Id != request.UserId)
+                return BadRequest(new { message = "Incorrect user provided" });
+
+            var reservation = await _reservationRepository.Get(request.ReservationId);
+
+            if (reservation == null)
+                return NotFound(new { message = "Reservation not found" });
+
+            user.Reservations.Remove(reservation);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Reservation cancelled successfully"
+            });
+
+        }
+
     }
 }
