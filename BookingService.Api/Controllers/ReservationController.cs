@@ -42,14 +42,14 @@ namespace BookingService.Api.Controllers
 
             return Ok(new
             {
-                reservations = user.Reservations.Select(r => new { r.UserId, r.HotelRoomId, dates = r.ReservationDates.Select(rd => rd.ReservedOn.Date) })
+                reservations = user.Reservations.Select(r => new { r.UserId, r.HotelRoomId, reservationId = r.Id, dates = r.ReservationDates.Select(rd => rd.ReservedOn.Date) })
             });
         }
 
         [HttpPost]
-        [Route("bookroom")]
+        [Route("createreservation")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> BookRoom(BookRoomRequest request)
+        public async Task<IActionResult> CreateReservation(ReservationRequest request)
         {
             if (request.Dates.Count > 3)
                 return BadRequest(new { message = "Cannot book room for a period longer than 3 days" });
@@ -94,7 +94,58 @@ namespace BookingService.Api.Controllers
 
             return Ok(new
             {
-                message = "Room successfully booked",
+                message = "Reservation created succesfully",
+                reservationId = reservation.Id,
+                userId = user.Id,
+                hotelRoomId = room.Id,
+                dates = reservation.ReservationDates.Select(rd => rd.ReservedOn.Date)
+            });
+        }
+
+        [HttpPut]
+        [Route("changeReservation")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> ChangeReservation(ChangeReservationRequest request)
+        {
+            if (request.Dates.Count > 3)
+                return BadRequest(new { message = "Cannot book room for a period longer than 3 days" });
+
+            if (request.Dates.OrderBy(d => d).FirstOrDefault().Date == DateTime.Now.Date)
+                return BadRequest(new { message = "Reservation cannot start today" });
+
+            if (request.Dates.OrderBy(d => d).FirstOrDefault().Date > DateTime.Now.AddDays(30).Date)
+                return BadRequest(new { message = "Reservation cannot start today" });
+
+            var user = await _userRepository.Get(User.Identity.Name);
+
+            if (user == null)
+                return NotFound(new { message = "User not found" });
+
+            if (user.Id != request.UserId)
+                return BadRequest(new { message = "Incorrect user provided" });
+
+            var reservation = await _reservationRepository.Get(request.ReservationId);
+
+            if (reservation == null)
+                return NotFound(new { message = "Reservation not found" });
+
+            var room = await _hotelRoomRepository.Get(reservation.HotelRoomId);
+
+            if (room.Reservations.Where(r => r.Id != reservation.Id).SelectMany(r => r.ReservationDates).Any(rd => request.Dates.Any(d => d.Date == rd.ReservedOn.Date)))
+                return BadRequest(new { message = "Date chosen has already been booked" });
+
+            reservation.ReservationDates = request.Dates
+                    .Select(d => new ReservationDate
+                    {
+                        ReservedOn = d
+                    })
+                    .ToList();
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Reservation updated succesfully",
                 reservationId = reservation.Id,
                 userId = user.Id,
                 hotelRoomId = room.Id,

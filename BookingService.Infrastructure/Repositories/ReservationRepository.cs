@@ -3,7 +3,6 @@ using BookingService.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BookingService.Infrastructure.Repositories
@@ -22,9 +21,12 @@ namespace BookingService.Infrastructure.Repositories
             _context.Reservations.Add(reservation);
         }
 
-        public Reservation Get(Guid id)
+        public async Task<Reservation> Get(Guid id)
         {
-            return _context.Reservations.FirstOrDefault(h => h.Id == id);
+            return await _context.Reservations
+                .Include(r => r.ReservationDates)
+                .Include(r => r.HotelRoom)
+                .FirstOrDefaultAsync(h => h.Id == id);
         }
 
         public async Task<IEnumerable<Reservation>> GetAll()

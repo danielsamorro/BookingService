@@ -8,7 +8,7 @@ namespace BookingService.Infrastructure.Repositories.Interfaces
     public interface IReservationRepository
     {
         void Add(Reservation hotelRoom);
-        Reservation Get(Guid id);
+        Task<Reservation> Get(Guid id);
         Task<IEnumerable<Reservation>> GetAll();
     }
 }
