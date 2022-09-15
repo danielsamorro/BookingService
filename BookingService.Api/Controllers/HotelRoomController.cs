@@ -1,4 +1,5 @@
-﻿using BookingService.Domain.Commands.Requests;
+﻿using BookingService.Api.Extensions;
+using BookingService.Domain.Commands.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace BookingService.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetRooms()
         {
-            return Ok(await _mediator.Send(new GetRoomsRequest()));
+            return (await _mediator.Send(new GetRoomsRequest())).ToActionResult();
         }
 
         [HttpGet]
@@ -30,7 +31,7 @@ namespace BookingService.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetReservedDates(string roomNumber)
         {
-            return Ok(await _mediator.Send(new GetReservedDatesRequest { RoomNumber = roomNumber }));
+            return (await _mediator.Send(new GetReservedDatesRequest { RoomNumber = roomNumber })).ToActionResult();
         }
     }
 }

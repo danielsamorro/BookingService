@@ -1,4 +1,5 @@
-﻿using BookingService.Domain.Commands.Requests;
+﻿using BookingService.Api.Extensions;
+using BookingService.Domain.Commands.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace BookingService.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {
-            return Ok(await _mediator.Send(request));
+            return (await _mediator.Send(request)).ToActionResult();
         }
 
         [HttpPost]
@@ -30,7 +31,7 @@ namespace BookingService.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
         {
-            return Ok(await _mediator.Send(request));
+            return (await _mediator.Send(request)).ToActionResult();
         }
     }
 }

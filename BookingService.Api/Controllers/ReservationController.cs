@@ -1,4 +1,5 @@
-﻿using BookingService.Domain.Commands.Requests;
+﻿using BookingService.Api.Extensions;
+using BookingService.Domain.Commands.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace BookingService.Api.Controllers
         {
             request.Username = User.Identity.Name;
 
-            return Ok(await _mediator.Send(request));
+            return (await _mediator.Send(request)).ToActionResult();
         }
 
         [HttpPut]
@@ -43,7 +44,7 @@ namespace BookingService.Api.Controllers
         {
             request.Username = User.Identity.Name;
 
-            return Ok(await _mediator.Send(request));
+            return (await _mediator.Send(request)).ToActionResult();
         }
 
         [HttpDelete]
@@ -53,7 +54,7 @@ namespace BookingService.Api.Controllers
         {
             request.Username = User.Identity.Name;
 
-            return Ok(await _mediator.Send(request));
+            return (await _mediator.Send(request)).ToActionResult();
         }
 
     }
