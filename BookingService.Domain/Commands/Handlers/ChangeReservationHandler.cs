@@ -1,5 +1,6 @@
 ﻿using BookingService.Domain.Commands.Requests;
 using BookingService.Domain.Commands.Responses;
+using BookingService.Domain.Exceptions;
 using BookingService.Domain.Responses;
 using BookingService.Infrastructure.Entities;
 using BookingService.Infrastructure.Repositories.Interfaces;
@@ -34,34 +35,34 @@ namespace BookingService.Domain.Commands.Handlers
             try
             {
                 if (request.Dates.Count > 3)
-                    throw new Exception("Cannot book room for a period longer than 3 days");
+                    throw new BadRequestException("Cannot book room for a period longer than 3 days");
 
                 if (request.Dates.OrderBy(d => d).FirstOrDefault().Date <= DateTime.Now.Date)
-                    throw new Exception("Reservation must start at least tomorrow");
+                    throw new BadRequestException("Reservation must start at least tomorrow");
 
                 if (request.Dates.OrderBy(d => d).FirstOrDefault().Date > DateTime.Now.AddDays(30).Date)
-                    throw new Exception("Reservation cannot start more than 30 days away");
+                    throw new BadRequestException("Reservation cannot start more than 30 days away");
 
                 var user = await _userRepository.Get(request.Username);
 
                 if (user == null)
-                    throw new Exception("User not found");
+                    throw new NotFoundException("User not found");
 
                 if (user.Id != request.UserId)
-                    throw new Exception("Incorrect user provided");
+                    throw new BadRequestException("Incorrect user provided");
 
                 var reservation = await _reservationRepository.Get(request.ReservationId);
 
                 if (reservation == null)
-                    throw new Exception("Reservation not found");
+                    throw new NotFoundException("Reservation not found");
 
                 var room = await _hotelRoomRepository.Get(reservation.HotelRoomId);
 
                 if (room == null)
-                    throw new Exception("Room not found.");
+                    throw new NotFoundException("Room not found.");
 
                 if (room.Reservations.Where(r => r.Id != reservation.Id).SelectMany(r => r.ReservationDates).Any(rd => request.Dates.Any(d => d.Date == rd.ReservedOn.Date)))
-                    throw new Exception("Date chosen has already been booked");
+                    throw new BadRequestException("Date chosen has already been booked");
 
                 reservation.ReservationDates = request.Dates
                         .Select(d => new ReservationDate
@@ -80,6 +81,14 @@ namespace BookingService.Domain.Commands.Handlers
                     HotelRoomId = reservation.HotelRoomId,
                     Dates = reservation.ReservationDates.Select(rd => rd.ReservedOn.Date).ToList()
                 });
+            }
+            catch (NotFoundException ex)
+            {
+                response = new NotFoundResponse(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                response = new BadRequestResponse(ex.Message);
             }
             catch (Exception ex)
             {

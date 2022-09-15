@@ -1,5 +1,6 @@
 ﻿using BookingService.Domain.Commands.Requests;
 using BookingService.Domain.Commands.Responses;
+using BookingService.Domain.Exceptions;
 using BookingService.Domain.Responses;
 using BookingService.Infrastructure.Repositories.Interfaces;
 using MediatR;
@@ -28,10 +29,10 @@ namespace BookingService.Domain.Commands.Handlers
                 var user = await _userRepository.Get(request.Username);
 
                 if (user == null)
-                    throw new Exception("User not found");
+                    throw new NotFoundException("User not found");
 
                 if (user.Id != request.UserId)
-                    throw new Exception("Incorrect user provided");
+                    throw new BadRequestException("Incorrect user provided");
 
                 response = new Response(new GetReservationsResponse
                 {
@@ -43,6 +44,14 @@ namespace BookingService.Domain.Commands.Handlers
                         Dates = r.ReservationDates.Select(rd => rd.ReservedOn.Date).ToList()
                     }).ToList()
                 });
+            }
+            catch (NotFoundException ex)
+            {
+                response = new NotFoundResponse(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                response = new BadRequestResponse(ex.Message);
             }
             catch (Exception ex)
             {

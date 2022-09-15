@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BookingService.Domain.Responses
+﻿namespace BookingService.Domain.Responses
 {
     public class NotFoundResponse : Response
     {

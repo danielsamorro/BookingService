@@ -1,5 +1,6 @@
 ﻿using BookingService.Domain.Commands.Requests;
 using BookingService.Domain.Commands.Responses;
+using BookingService.Domain.Exceptions;
 using BookingService.Domain.Responses;
 using BookingService.Domain.Services.Interfaces;
 using BookingService.Infrastructure.Repositories.Interfaces;
@@ -30,7 +31,7 @@ namespace BookingService.Domain.Commands.Handlers
                 var user = await _userRepository.Get(request.Username, request.Password);
 
                 if (user == null)
-                    throw new Exception("Invalid username or password.");
+                    throw new BadRequestException("Invalid username or password.");
 
                 var token = _authTokenService.GenerateAuthToken(user);
 
@@ -41,6 +42,10 @@ namespace BookingService.Domain.Commands.Handlers
                     Username = user.Username,
                     Token = token
                 });
+            }
+            catch (BadRequestException ex)
+            {
+                response = new BadRequestResponse(ex.Message);
             }
             catch (Exception ex)
             {

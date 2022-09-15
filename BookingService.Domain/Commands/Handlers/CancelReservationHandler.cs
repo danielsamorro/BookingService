@@ -1,5 +1,6 @@
 ﻿using BookingService.Domain.Commands.Requests;
 using BookingService.Domain.Commands.Responses;
+using BookingService.Domain.Exceptions;
 using BookingService.Domain.Responses;
 using BookingService.Infrastructure.Repositories.Interfaces;
 using BookingService.Infrastructure.SeedWorking.Interfaces;
@@ -32,15 +33,15 @@ namespace BookingService.Domain.Commands.Handlers
                 var user = await _userRepository.Get(request.Username);
 
                 if (user == null)
-                    throw new Exception("User not found");
+                    throw new NotFoundException("User not found");
 
                 if (user.Id != request.UserId)
-                    throw new Exception("Incorrect user provided");
+                    throw new BadRequestException("Incorrect user provided");
 
                 var reservation = await _reservationRepository.Get(request.ReservationId);
 
                 if (reservation == null)
-                    throw new Exception("Reservation not found");
+                    throw new NotFoundException("Reservation not found");
 
                 user.Reservations.Remove(reservation);
 
@@ -50,6 +51,14 @@ namespace BookingService.Domain.Commands.Handlers
                 {
                     Message = "Reservation cancelled successfully"
                 });
+            }
+            catch (NotFoundException ex)
+            {
+                response = new NotFoundResponse(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                response = new BadRequestResponse(ex.Message);
             }
             catch (Exception ex)
             {
