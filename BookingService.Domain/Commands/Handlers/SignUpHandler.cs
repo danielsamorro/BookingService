@@ -28,7 +28,7 @@ namespace BookingService.Domain.Commands.Handlers
 
             try
             {
-                var userExists = await _userRepository.CheckDuplicate(request.UserName, request.EmailAddress);
+                var userExists = await _userRepository.CheckDuplicate(request.Username, request.EmailAddress);
 
                 if (userExists)
                     throw new Exception("Could not sign up user.");
@@ -36,7 +36,7 @@ namespace BookingService.Domain.Commands.Handlers
                 var user = new User
                 {
                     EmailAddress = request.EmailAddress,
-                    Username = request.UserName,
+                    Username = request.Username,
                     Password = request.Password,
                     Role = "Customer"
                 };

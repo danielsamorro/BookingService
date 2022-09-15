@@ -77,8 +77,8 @@ namespace BookingService.Domain.Commands.Handlers
                 {
                     Message = "Reservation created succesfully",
                     ReservationId = reservation.Id,
-                    UserId = reservation.UserId,
-                    HotelRoomId = reservation.HotelRoomId,
+                    UserId = reservation.User.Id,
+                    HotelRoomId = reservation.HotelRoom.Id,
                     Dates = reservation.ReservationDates.Select(rd => rd.ReservedOn.Date).ToList()
                 });
             }

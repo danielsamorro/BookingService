@@ -32,7 +32,7 @@ namespace BookingService.Test.Api.Controllers
             {
                 EmailAddress = "test@test.com",
                 Password = "gmierg893g4ug43",
-                UserName = "testuser"
+                Username = "testuser"
             };
             var response = new Response("test");
 
