@@ -20,8 +20,4 @@
     <ProjectReference Include="..\BookingService.Infrastructure\BookingService.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
-  </ItemGroup>
-
 </Project>
