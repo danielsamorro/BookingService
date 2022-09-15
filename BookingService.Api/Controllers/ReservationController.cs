@@ -1,11 +1,8 @@
 ﻿using BookingService.Domain.Commands.Requests;
-using BookingService.Infrastructure.Entities;
-using BookingService.Infrastructure.Repositories.Interfaces;
-using BookingService.Infrastructure.SeedWorking.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BookingService.Api.Controllers
@@ -14,17 +11,11 @@ namespace BookingService.Api.Controllers
     [ApiController]
     public class ReservationController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserRepository _userRepository;
-        private readonly IReservationRepository _reservationRepository;
-        private readonly IHotelRoomRepository _hotelRoomRepository;
+        private readonly IMediator _mediator;
 
-        public ReservationController(IUnitOfWork unitOfWork, IUserRepository userRepository, IReservationRepository reservationRepository, IHotelRoomRepository hotelRoomRepository)
+        public ReservationController(IMediator mediator)
         {
-            _unitOfWork = unitOfWork;
-            _userRepository = userRepository;
-            _reservationRepository = reservationRepository;
-            _hotelRoomRepository = hotelRoomRepository;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -32,74 +23,17 @@ namespace BookingService.Api.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetReservations(Guid userId)
         {
-            var user = await _userRepository.Get(User.Identity.Name);
-
-            if (user == null)
-                return NotFound(new { message = "User not found" });
-
-            if (user.Id != userId)
-                return BadRequest(new { message = "Incorrect user provided" });
-
-            return Ok(new
-            {
-                reservations = user.Reservations.Select(r => new { r.UserId, r.HotelRoomId, reservationId = r.Id, dates = r.ReservationDates.Select(rd => rd.ReservedOn.Date) })
-            });
+            return Ok(await _mediator.Send(new GetReservationsRequest { UserId = userId, Username = User.Identity.Name }));
         }
 
         [HttpPost]
         [Route("createreservation")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CreateReservation(ReservationRequest request)
+        public async Task<IActionResult> CreateReservation(CreateReservationRequest request)
         {
-            if (request.Dates.Count > 3)
-                return BadRequest(new { message = "Cannot book room for a period longer than 3 days" });
+            request.Username = User.Identity.Name;
 
-            if (request.Dates.OrderBy(d => d).FirstOrDefault().Date == DateTime.Now.Date)
-                return BadRequest(new { message = "Reservation cannot start today" });
-
-            if (request.Dates.OrderBy(d => d).FirstOrDefault().Date > DateTime.Now.AddDays(30).Date)
-                return BadRequest(new { message = "Reservation cannot start more than 30 days away" });
-
-            var user = await _userRepository.Get(User.Identity.Name);
-
-            if (user == null)
-                return NotFound(new { message = "User not found" });
-
-            if (user.Id != request.UserId)
-                return BadRequest(new { message = "Incorrect user provided" });
-
-            var room = await _hotelRoomRepository.Get(request.HotelRoomId);
-
-            if (room == null)
-                return NotFound(new { message = "Room not found." });            
-
-            if (room.Reservations.SelectMany(r => r.ReservationDates).Any(rd => request.Dates.Any(d => d.Date == rd.ReservedOn.Date)))
-                return BadRequest(new { message = "Date chosen has already been booked" });
-
-            var reservation = new Reservation
-            {
-                HotelRoom = room,
-                User = user,
-                ReservationDates = request.Dates
-                    .Select(d => new ReservationDate
-                    {
-                        ReservedOn = d
-                    })
-                    .ToList()
-            };
-
-            user.Reservations.Add(reservation);
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Reservation created succesfully",
-                reservationId = reservation.Id,
-                userId = user.Id,
-                hotelRoomId = room.Id,
-                dates = reservation.ReservationDates.Select(rd => rd.ReservedOn.Date)
-            });
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpPut]
@@ -107,50 +41,9 @@ namespace BookingService.Api.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ChangeReservation(ChangeReservationRequest request)
         {
-            if (request.Dates.Count > 3)
-                return BadRequest(new { message = "Cannot book room for a period longer than 3 days" });
+            request.Username = User.Identity.Name;
 
-            if (request.Dates.OrderBy(d => d).FirstOrDefault().Date == DateTime.Now.Date)
-                return BadRequest(new { message = "Reservation cannot start today" });
-
-            if (request.Dates.OrderBy(d => d).FirstOrDefault().Date > DateTime.Now.AddDays(30).Date)
-                return BadRequest(new { message = "Reservation cannot start more than 30 days away" });
-
-            var user = await _userRepository.Get(User.Identity.Name);
-
-            if (user == null)
-                return NotFound(new { message = "User not found" });
-
-            if (user.Id != request.UserId)
-                return BadRequest(new { message = "Incorrect user provided" });
-
-            var reservation = await _reservationRepository.Get(request.ReservationId);
-
-            if (reservation == null)
-                return NotFound(new { message = "Reservation not found" });
-
-            var room = await _hotelRoomRepository.Get(reservation.HotelRoomId);
-
-            if (room.Reservations.Where(r => r.Id != reservation.Id).SelectMany(r => r.ReservationDates).Any(rd => request.Dates.Any(d => d.Date == rd.ReservedOn.Date)))
-                return BadRequest(new { message = "Date chosen has already been booked" });
-
-            reservation.ReservationDates = request.Dates
-                    .Select(d => new ReservationDate
-                    {
-                        ReservedOn = d
-                    })
-                    .ToList();
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Reservation updated succesfully",
-                reservationId = reservation.Id,
-                userId = user.Id,
-                hotelRoomId = room.Id,
-                dates = reservation.ReservationDates.Select(rd => rd.ReservedOn.Date)
-            });
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpDelete]
@@ -158,28 +51,9 @@ namespace BookingService.Api.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CancelReservation(CancelReservationRequest request)
         {
-            var user = await _userRepository.Get(User.Identity.Name);
+            request.Username = User.Identity.Name;
 
-            if (user == null)
-                return NotFound(new { message = "User not found" });
-
-            if (user.Id != request.UserId)
-                return BadRequest(new { message = "Incorrect user provided" });
-
-            var reservation = await _reservationRepository.Get(request.ReservationId);
-
-            if (reservation == null)
-                return NotFound(new { message = "Reservation not found" });
-
-            user.Reservations.Remove(reservation);
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Reservation cancelled successfully"
-            });
-
+            return Ok(await _mediator.Send(request));
         }
 
     }

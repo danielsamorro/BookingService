@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BookingService.Domain.Handlers
+namespace BookingService.Domain.Commands.Handlers
 {
     public class SignUpHandler : IRequestHandler<SignUpRequest, Response>
     {

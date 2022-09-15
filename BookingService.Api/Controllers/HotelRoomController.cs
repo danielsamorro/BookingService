@@ -1,7 +1,7 @@
-﻿using BookingService.Infrastructure.Repositories.Interfaces;
+﻿using BookingService.Domain.Commands.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BookingService.Api.Controllers
@@ -10,11 +10,11 @@ namespace BookingService.Api.Controllers
     [ApiController]
     public class HotelRoomController : ControllerBase
     {
-        private readonly IHotelRoomRepository _hotelRoomRepository;
+        private readonly IMediator _mediator;
 
-        public HotelRoomController(IHotelRoomRepository hotelRoomRepository)
+        public HotelRoomController(IMediator mediator)
         {
-            _hotelRoomRepository = hotelRoomRepository;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -22,12 +22,7 @@ namespace BookingService.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetRooms()
         {
-            var rooms = await _hotelRoomRepository.GetAll();
-
-            return Ok(new
-            {
-                rooms
-            });
+            return Ok(await _mediator.Send(new GetRoomsRequest()));
         }
 
         [HttpGet]
@@ -35,15 +30,7 @@ namespace BookingService.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetReservedDates(string roomNumber)
         {
-            var hotelRoom = await _hotelRoomRepository.Get(roomNumber);
-
-            if (hotelRoom == null)
-                return NotFound(new { message = "Room not found" });
-
-            return Ok(new
-            {
-                reservedDates = hotelRoom.Reservations.SelectMany(r => r.ReservationDates).Select(rd => rd.ReservedOn)
-            });
+            return Ok(await _mediator.Send(new GetReservedDatesRequest { RoomNumber = roomNumber }));
         }
     }
 }

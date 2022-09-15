@@ -1,6 +1,6 @@
 ﻿using BookingService.Infrastructure.Entities;
 
-namespace BookingService.Api.Services.Interfaces
+namespace BookingService.Domain.Services.Interfaces
 {
     public interface IAuthTokenService
     {

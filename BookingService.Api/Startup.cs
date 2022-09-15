@@ -1,5 +1,5 @@
-using BookingService.Api.Services;
-using BookingService.Api.Services.Interfaces;
+using BookingService.Domain.Services;
+using BookingService.Domain.Services.Interfaces;
 using BookingService.Infrastructure;
 using BookingService.Infrastructure.Repositories;
 using BookingService.Infrastructure.Repositories.Interfaces;

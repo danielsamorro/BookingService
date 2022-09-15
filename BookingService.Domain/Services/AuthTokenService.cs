@@ -1,4 +1,4 @@
-﻿using BookingService.Api.Services.Interfaces;
+﻿using BookingService.Domain.Services.Interfaces;
 using BookingService.Infrastructure;
 using BookingService.Infrastructure.Entities;
 using Microsoft.Extensions.Options;
@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BookingService.Api.Services
+namespace BookingService.Domain.Services
 {
     public class AuthTokenService : IAuthTokenService
     {
