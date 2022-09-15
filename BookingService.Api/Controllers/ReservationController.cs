@@ -19,7 +19,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("getreservations")]
+        [Route("GetReservations")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetReservations(Guid userId)
         {
@@ -27,7 +27,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpPost]
-        [Route("createreservation")]
+        [Route("CreateReservation")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CreateReservation(CreateReservationRequest request)
         {
@@ -37,7 +37,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpPut]
-        [Route("changeReservation")]
+        [Route("ChangeReservation")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> ChangeReservation(ChangeReservationRequest request)
         {
@@ -47,7 +47,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("cancelReservation")]
+        [Route("CancelReservation")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CancelReservation(CancelReservationRequest request)
         {

@@ -18,7 +18,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpPost]
-        [Route("signup")]
+        [Route("SignUp")]
         [AllowAnonymous]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {
@@ -26,7 +26,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpPost]
-        [Route("signin")]
+        [Route("SignIn")]
         [AllowAnonymous]
         public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
         {

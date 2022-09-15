@@ -18,7 +18,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("getrooms")]
+        [Route("GetRooms")]
         [AllowAnonymous]
         public async Task<IActionResult> GetRooms()
         {
@@ -26,7 +26,7 @@ namespace BookingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("getreserveddates")]
+        [Route("GetReservedDates")]
         [AllowAnonymous]
         public async Task<IActionResult> GetReservedDates(string roomNumber)
         {
