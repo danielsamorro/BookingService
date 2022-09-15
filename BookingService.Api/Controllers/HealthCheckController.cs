@@ -6,10 +6,7 @@ namespace BookingService.Api.Controllers
     [ApiController]
     public class HealthCheckController : ControllerBase
     {
-        public HealthCheckController()
-        {
-
-        }
+        public HealthCheckController() { }
 
         [HttpGet]
         [Route("")]
